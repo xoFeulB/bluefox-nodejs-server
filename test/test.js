@@ -39,7 +39,7 @@ let callable = async () => {
         return false;
       }
     },
-    (max_polling = 5000)
+    (max_polling = 100)
   );
   alert(JSON.stringify(result.result.value, null, 4));
   return result.result.value;

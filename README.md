@@ -5,7 +5,7 @@ npm i @xofeulb/bluefox-server
 ```
 
 ```javascript
-import { BlueFoxServer } from "../src/index.js";
+import { BlueFoxServer } from "@xofeulb/bluefox-server";
 import fs from "fs";
 import child_process from "child_process";
 
