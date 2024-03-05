@@ -1,27 +1,15 @@
-# bluefox-nodejs-server
-
-```bash
-npm i @xofeulb/bluefox-server
-```
-
-```javascript
 import { BlueFoxServer } from "../src/index.js";
 import fs from "fs";
 import child_process from "child_process";
 
 if (!fs.existsSync("./test/BlueFoxScript-Examples")) {
-  child_process.execSync(
-    "git clone https://github.com/xoFeulB/BlueFoxScript-Examples.git ./test/BlueFoxScript-Examples"
-  );
+  child_process.execSync("git clone https://github.com/xoFeulB/BlueFoxScript-Examples.git ./test/BlueFoxScript-Examples");
 } else {
   child_process.execSync("git -C ./test/BlueFoxScript-Examples pull");
 }
 
 const gate = new BlueFoxServer.Gate(9999);
-const server = new BlueFoxServer.Server(
-  "./test/BlueFoxScript-Examples",
-  "ws://127.0.0.1:9999"
-);
+const server = new BlueFoxServer.Server("./test/BlueFoxScript-Examples", "ws://127.0.0.1:9999");
 
 gate.start();
 server.start();
@@ -45,7 +33,7 @@ let callable = async () => {
           return {
             testid: _.attributes["data-testid"].value,
             checked: _.checked,
-          };
+          }
         });
       } else {
         return false;
@@ -55,30 +43,25 @@ let callable = async () => {
   );
   alert(JSON.stringify(result.result.value, null, 4));
   return result.result.value;
-};
-await [...gate.webSocketServer.clients][0].runScript(
-  `(${config.toString()})();`
-);
-let result = await [...gate.webSocketServer.clients][0].runScript(
+}
+await ([...gate.webSocketServer.clients][0]).runScript(`(${config.toString()})();`);
+let result = await ([...gate.webSocketServer.clients][0]).runScript(
   `(${callable.toString()})();`
 );
-if (
-  JSON.stringify({
-    type: "object",
-    value: [
-      { checked: true, testid: "bit-8" },
-      { checked: false, testid: "bit-7" },
-      { checked: false, testid: "bit-6" },
-      { checked: false, testid: "bit-5" },
-      { checked: false, testid: "bit-4" },
-      { checked: false, testid: "bit-3" },
-      { checked: false, testid: "bit-2" },
-      { checked: false, testid: "bit-1" },
-    ],
-  }) == JSON.stringify(result.result)
-) {
+if (JSON.stringify({
+  type: 'object',
+  value: [
+    { checked: true, testid: 'bit-8' },
+    { checked: false, testid: 'bit-7' },
+    { checked: false, testid: 'bit-6' },
+    { checked: false, testid: 'bit-5' },
+    { checked: false, testid: 'bit-4' },
+    { checked: false, testid: 'bit-3' },
+    { checked: false, testid: 'bit-2' },
+    { checked: false, testid: 'bit-1' }
+  ]
+}) == JSON.stringify(result.result)) {
   console.info("OK");
 } else {
   console.info("NG");
 }
-```
