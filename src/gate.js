@@ -3,6 +3,7 @@ import { WebSocketServer } from "ws";
 import crypto from "crypto";
 import url from "url";
 import fs from "fs";
+import open, { apps } from "open";
 
 export class Gate {
   constructor(wsEntrancePort = 9999) {
@@ -120,6 +121,32 @@ export class Gate {
     }
       /* webSocketServer Browser communicate connection */ {
       this.webSocketServer = new WebSocketServer({ port: 8888 });
+      this.webSocketServer.tillOpenPool = {};
+      this.webSocketServer.openChrome = async (extension_id, option = []) => {
+        let uuid = crypto.randomUUID();
+        let R = new Promise((resolve, reject) => {
+          this.webSocketServer.tillOpenPool[uuid] = (_) => {
+            resolve(_);
+          };
+        });
+        open(`chrome-extension://${extension_id}/tab/html/index.html#${uuid}`, { app: { name: apps.chrome, arguments: option } });
+        return this.webSocketServer.getClientByBlueFoxID((await R).BlueFoxID)
+      };
+      this.webSocketServer.openEdge = async (extension_id, option = []) => {
+        let uuid = crypto.randomUUID();
+        let R = new Promise((resolve, reject) => {
+          this.webSocketServer.tillOpenPool[uuid] = (_) => {
+            resolve(_);
+          };
+        });
+        open(`extension://${extension_id}/tab/html/index.html#${uuid}`, { app: { name: apps.chrome, arguments: option } });
+        return this.webSocketServer.getClientByBlueFoxID((await R).BlueFoxID)
+      };
+      this.webSocketServer.getClientByBlueFoxID = (BlueFoxID) => {
+        return [...this.webSocketServer.clients].filter((_) => {
+          return _.BlueFoxID == BlueFoxID;
+        })[0];
+      };
       this.webSocketServer.on("connection", async (webSocket) => {
         webSocket.id = crypto.randomUUID();
 
@@ -148,9 +175,14 @@ export class Gate {
         };
         webSocket.on("message", async (message) => {
           let data = JSON.parse(message);
+
           if (data.id in this.BlueFoxClients[webSocket.id].messagePool) {
             await this.BlueFoxClients[webSocket.id].messagePool[data.id](data);
             delete this.BlueFoxClients[webSocket.id].messagePool[data.id];
+          } else if (data.BlueFoxID in this.webSocketServer.tillOpenPool) {
+            webSocket.BlueFoxID = data.BlueFoxID;
+            await this.webSocketServer.tillOpenPool[data.BlueFoxID](data);
+            delete this.webSocketServer.tillOpenPool[data.BlueFoxID];
           }
         });
       });
