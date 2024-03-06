@@ -1,6 +1,6 @@
 {
   "name": "@xofeulb/bluefox-server",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "HTTP and WS Server for BlueFox and BlueFoxServer (VSCode)",
   "type": "module",
   "exports": {
@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/xoFeulB/bluefox-nodejs-server#readme",
   "dependencies": {
-    "@xofeulb/bluefox-js": "^0.1.0",
     "glob": "^10.3.10",
     "open": "^10.0.4",
     "ws": "^8.16.0"
