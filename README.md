@@ -5,7 +5,7 @@ npm i @xofeulb/bluefox-server
 ```
 
 ```javascript
-import { BlueFoxServer } from "@xofeulb/bluefox-server";
+import { BlueFoxServer } from "../src/index.js";
 import fs from "fs";
 import child_process from "child_process";
 
@@ -26,9 +26,9 @@ const server = new BlueFoxServer.Server(
 gate.start();
 server.start();
 
-await BlueFoxServer.open.chrome("about:newtab");
-
-await BlueFoxServer.sleep(2000);
+let BlueFox = await gate.webSocketServer.openChrome(
+  "jmkijjjfiimebohbccipaahimknabkfe"
+);
 
 let config = async () => {
   // window scope
@@ -51,17 +51,13 @@ let callable = async () => {
         return false;
       }
     },
-    (max_polling = 5000)
+    (max_polling = 100)
   );
   alert(JSON.stringify(result.result.value, null, 4));
   return result.result.value;
 };
-await [...gate.webSocketServer.clients][0].runScript(
-  `(${config.toString()})();`
-);
-let result = await [...gate.webSocketServer.clients][0].runScript(
-  `(${callable.toString()})();`
-);
+await BlueFox.runScript(`(${config.toString()})();`);
+let result = await BlueFox.runScript(`(${callable.toString()})();`);
 if (
   JSON.stringify({
     type: "object",
