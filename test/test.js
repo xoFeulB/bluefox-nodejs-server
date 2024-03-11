@@ -1,6 +1,7 @@
 import { BlueFoxServer } from "../src/index.js";
 import fs from "fs";
 import child_process from "child_process";
+let sleep = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
 
 if (!fs.existsSync("./test/BlueFoxScript-Examples")) {
   child_process.execSync("git clone https://github.com/xoFeulB/BlueFoxScript-Examples.git ./test/BlueFoxScript-Examples");
@@ -15,15 +16,14 @@ gate.start();
 server.start();
 
 let BlueFox = await gate.webSocketServer.openChrome("jmkijjjfiimebohbccipaahimknabkfe");
-
 let config = async () => {
   // window scope
   url = "https://ooo.bluefox.ooo/BlueFoxDemo/8bit.html"; // or window.url
   blueFoxScript = await new BlueFoxScript();
 };
 let callable = async () => {
-  let tab = await blueFoxScript.tabs.create(url);
-  let result = await tab.dispatch.tillScriptTrue(
+  let tab = await blueFoxScript.createWindow(url);
+  let result = await tab.dispatchScriptTillTrue(
     // in https://ooo.bluefox.ooo/BlueFoxDemo/8bit.html scope
     () => {
       if (document.querySelector("[out]").textContent == "#80") {
@@ -42,6 +42,8 @@ let callable = async () => {
   alert(JSON.stringify(result.result.value, null, 4));
   return result.result.value;
 }
+
+await sleep(5000);
 await BlueFox.runScript(`(${config.toString()})();`);
 let result = await BlueFox.runScript(
   `(${callable.toString()})();`
