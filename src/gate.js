@@ -36,10 +36,10 @@ export class Gate {
 
   start() {
           /* httpServer */ {
-      let GET_API = {
+      const GET_API = {
         "/GetWorkspace.get": async (query, response) => {
-          let R = [];
-          for (let uuid of Object.keys(this.workspaceClients)) {
+          const R = [];
+          for (const uuid of Object.keys(this.workspaceClients)) {
             R.push(
               await this.workspaceClients[uuid].send(
                 {
@@ -56,7 +56,7 @@ export class Gate {
         "/GetFile.get": async (query, response) => {
           try {
             query = JSON.parse(query);
-            let filepath = (await this.workspaceClients[query.id].send(
+            const filepath = (await this.workspaceClients[query.id].send(
               Object.assign(
                 query,
                 {
@@ -64,7 +64,7 @@ export class Gate {
                 }
               )
             )).filePath;
-            let R = fs.readFileSync(filepath.replaceAll("../", ""), "utf-8");
+            const R = fs.readFileSync(filepath.replaceAll("../", ""), "utf-8");
             response.writeHead(200, { "Content-Type": "application/javascript" });
             response.end(R, "utf-8");
           } catch (e) {
@@ -74,13 +74,13 @@ export class Gate {
         },
         "/R": async (query, response) => {
           query = query.split("/");
-          let uuid = query[1];
-          let workspace = query[2];
-          let file_name = query.slice(-1)[0];
-          let extension = file_name.split(".").slice(-1);
-          let path = `/${query.slice(3).join("/")}`;
+          const uuid = query[1];
+          const workspace = query[2];
+          const file_name = query.slice(-1)[0];
+          const extension = file_name.split(".").slice(-1);
+          const path = `/${query.slice(3).join("/")}`;
 
-          let filepath = (await this.workspaceClients[uuid].send(
+          const filepath = (await this.workspaceClients[uuid].send(
             {
               type: "GetFilePath",
               id: uuid,
@@ -88,16 +88,16 @@ export class Gate {
               path: path
             },
           )).filePath;
-          let R = fs.readFileSync(filepath.replaceAll("../", ""));
+          const R = fs.readFileSync(filepath.replaceAll("../", ""));
 
-          let header = { "Content-Type": (extension in this.mime) ? this.mime[extension] : "application/octet-stream" };
+          const header = { "Content-Type": (extension in this.mime) ? this.mime[extension] : "application/octet-stream" };
           response.writeHead(200, header);
           response.end(R, "binary");
         }
       };
-      let POST_API = {};
+      const POST_API = {};
 
-      let method = {
+      const method = {
         "GET": (request, response) => {
           GET_API[url.parse(request.url).pathname](decodeURI(url.parse(request.url).query), response);
         },
@@ -123,8 +123,8 @@ export class Gate {
       this.webSocketServer = new WebSocketServer({ port: 8888 });
       this.webSocketServer.tillOpenPool = {};
       this.webSocketServer.openChrome = async (extension_id, option = []) => {
-        let uuid = crypto.randomUUID();
-        let R = new Promise((resolve, reject) => {
+        const uuid = crypto.randomUUID();
+        const R = new Promise((resolve, reject) => {
           this.webSocketServer.tillOpenPool[uuid] = (_) => {
             resolve(_);
           };
@@ -133,8 +133,8 @@ export class Gate {
         return this.webSocketServer.getClientByBlueFoxID((await R).BlueFoxID)
       };
       this.webSocketServer.openEdge = async (extension_id, option = []) => {
-        let uuid = crypto.randomUUID();
-        let R = new Promise((resolve, reject) => {
+        const uuid = crypto.randomUUID();
+        const R = new Promise((resolve, reject) => {
           this.webSocketServer.tillOpenPool[uuid] = (_) => {
             resolve(_);
           };
@@ -165,7 +165,7 @@ export class Gate {
             this.BlueFoxClients[webSocket.id].webSocket.send(
               JSON.stringify(Object.assign(message, { id: webSocket.id }))
             );
-            let R = new Promise((resolve, reject) => {
+            const R = new Promise((resolve, reject) => {
               this.BlueFoxClients[webSocket.id].messagePool[webSocket.id] = (_) => {
                 resolve(_);
               };
@@ -174,7 +174,7 @@ export class Gate {
           }
         };
         webSocket.on("message", async (message) => {
-          let data = JSON.parse(message);
+          const data = JSON.parse(message);
 
           if (data.id in this.BlueFoxClients[webSocket.id].messagePool) {
             await this.BlueFoxClients[webSocket.id].messagePool[data.id](data);
@@ -188,7 +188,7 @@ export class Gate {
       });
     }
       /* WebSocketGate VSCode workspace connection */ {
-      let push_function = {
+        const push_function = {
         "RunScript": (data) => {
           [...this.webSocketServer.clients][0].send(
             JSON.stringify(data)
@@ -205,7 +205,7 @@ export class Gate {
             this.workspaceClients[webSocket.id].webSocket.send(
               JSON.stringify(Object.assign(message, { id: webSocket.id }))
             );
-            let R = new Promise((resolve, reject) => {
+            const R = new Promise((resolve, reject) => {
               this.workspaceClients[webSocket.id].messagePool[webSocket.id] = (_) => {
                 resolve(_);
               };
@@ -225,7 +225,7 @@ export class Gate {
 
 
         webSocket.on("message", async (message) => {
-          let data = JSON.parse(message);
+          const data = JSON.parse(message);
           if (data.id in this.workspaceClients[webSocket.id].messagePool) {
             await this.workspaceClients[webSocket.id].messagePool[data.id](data);
             delete this.workspaceClients[webSocket.id].messagePool[data.id];

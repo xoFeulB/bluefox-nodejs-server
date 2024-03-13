@@ -18,7 +18,7 @@ export class Server {
             name: this.workspaceName,
             objects: glob.sync(`${this.root}/**/*`).map(
               (_) => {
-                let r = {
+                const r = {
                   path: _.replace(/\\/g, "/").slice(this.root.length),
                   isFile: fs.statSync(_).isFile(),
                 }
@@ -29,7 +29,7 @@ export class Server {
         };
       },
       "GetFilePath": (data) => {
-        let workspaceFolders = {};
+        const workspaceFolders = {};
         workspaceFolders[this.workspaceName] = this.root;
         return { filePath: `${workspaceFolders[data.workspace]}${data.path}` };
       }
@@ -40,8 +40,8 @@ export class Server {
     this.webSocketClient = new WebSocket(this.wsEntrance);
     this.webSocketClient.addEventListener("open", (event) => { });
     this.webSocketClient.addEventListener("message", (event) => {
-      let data = JSON.parse(event.data);
-      let R = this.API[data.type](data);
+      const data = JSON.parse(event.data);
+      const R = this.API[data.type](data);
       delete data.type;
       this.webSocketClient.send(
         JSON.stringify(Object.assign(data, R))
