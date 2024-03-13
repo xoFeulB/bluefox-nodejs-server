@@ -38,7 +38,7 @@ export class Server {
 
   start() {
     this.webSocketClient = new WebSocket(this.wsEntrance);
-    this.webSocketClient.addEventListener("open", () => { });
+    this.webSocketClient.addEventListener("open", (event) => { });
     this.webSocketClient.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
       const R = this.API[data.type](data);
