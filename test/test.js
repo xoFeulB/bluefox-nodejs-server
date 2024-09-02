@@ -9,13 +9,13 @@ if (!fs.existsSync("./test/BlueFoxScript-Examples")) {
   child_process.execSync("git -C ./test/BlueFoxScript-Examples pull");
 }
 
-const gate = new BlueFoxServer.Gate(9999);
-const server = new BlueFoxServer.Server("./test/BlueFoxScript-Examples", "ws://127.0.0.1:9999");
+const gate = new BlueFoxServer.GateServer(9999);
+const server = new BlueFoxServer.WorkspaceServer("./test/BlueFoxScript-Examples", "ws://127.0.0.1:9999");
 
 gate.start();
 server.start();
 
-let BlueFox = await gate.webSocketServer.openChrome("jmkijjjfiimebohbccipaahimknabkfe");
+let BlueFox = await gate.webSocketServer.openChrome("haofkinhfammohjkkhpmelkgagkhlepm");
 let config = async () => {
   // window scope
   url = "https://ooo.bluefox.ooo/BlueFoxDemo/8bit.html"; // or window.url

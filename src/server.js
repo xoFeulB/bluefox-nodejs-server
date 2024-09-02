@@ -4,7 +4,7 @@ import { glob } from "glob";
 import crypto from "crypto";
 import fs from "fs";
 
-export class Server {
+export class WorkspaceServer {
   constructor(root, wsEntrance = "ws://127.0.0.1:9999") {
     this.root = path.resolve(root).split(path.sep).join(path.posix.sep);
     this.wsEntrance = wsEntrance;

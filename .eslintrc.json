@@ -10,8 +10,15 @@
         "sourceType": "module"
     },
     "rules": {
-        "prefer-const": 2,
-        "no-unused-vars": 1,
-        "eol-last": "error"
+        "eol-last": "error",
+        "no-unused-vars": [
+            "warn",
+            {
+              "argsIgnorePattern": "^_",
+              "varsIgnorePattern": "^_",
+              "caughtErrorsIgnorePattern": "^_",
+              "destructuredArrayIgnorePattern": "^_"
+            }
+          ]
     }
 }

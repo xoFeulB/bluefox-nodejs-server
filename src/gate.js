@@ -5,7 +5,7 @@ import url from "url";
 import fs from "fs";
 import open, { apps } from "open";
 
-export class Gate {
+export class GateServer {
   constructor(wsEntrancePort = 9999) {
     this.wsEntrancePort = wsEntrancePort;
     this.httpServer;
@@ -129,7 +129,7 @@ export class Gate {
             resolve(_);
           };
         });
-        open(`chrome-extension://${extension_id}/tab/html/index.html#${uuid}`, { app: { name: apps.chrome, arguments: option } });
+        open(`chrome-extension://${extension_id}/document/index.html#${uuid}`, { app: { name: apps.chrome, arguments: option } });
         return this.webSocketServer.getClientByBlueFoxID((await R).BlueFoxID)
       };
       this.webSocketServer.openEdge = async (extension_id, option = []) => {
@@ -139,7 +139,7 @@ export class Gate {
             resolve(_);
           };
         });
-        open(`extension://${extension_id}/tab/html/index.html#${uuid}`, { app: { name: apps.chrome, arguments: option } });
+        open(`extension://${extension_id}/document/index.html#${uuid}`, { app: { name: apps.chrome, arguments: option } });
         return this.webSocketServer.getClientByBlueFoxID((await R).BlueFoxID)
       };
       this.webSocketServer.getClientByBlueFoxID = (BlueFoxID) => {
@@ -188,7 +188,7 @@ export class Gate {
       });
     }
       /* WebSocketGate VSCode workspace connection */ {
-        const push_function = {
+      const push_function = {
         "RunScript": (data) => {
           [...this.webSocketServer.clients][0].send(
             JSON.stringify(data)

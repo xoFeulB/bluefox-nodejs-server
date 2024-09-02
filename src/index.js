@@ -1,9 +1,9 @@
-import { Gate } from "@xofeulb/bluefox-server/Gate";
-import { Server } from "@xofeulb/bluefox-server/Server";
+import { GateServer } from "@xofeulb/bluefox-server/Gate";
+import { WorkspaceServer } from "@xofeulb/bluefox-server/Server";
 
 const BlueFoxServer = {
-  Gate: Gate,
-  Server: Server,
+  GateServer: GateServer,
+  WorkspaceServer: WorkspaceServer,
   sleep: (msec) => new Promise((resolve) => setTimeout(resolve, msec)),
 };
 
